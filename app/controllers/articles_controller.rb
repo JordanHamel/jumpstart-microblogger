@@ -5,6 +5,8 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find(params[:id])
+    @comment = Comment.new
+    @comment.article_id = @article.id
   end
 
   def new
@@ -16,8 +18,33 @@ class ArticlesController < ApplicationController
       title: params[:article][:title],
       body: params[:article][:body])
     @article.save!
+
+    flash.notice = "'#{@article.title}' has been saved!"
+
     redirect_to article_path(@article)
   end
 
+  def destroy
+    @article = Article.find(params[:id])
+    title = @article.title
+    @article.destroy
+
+    flash.notice = "'#{title}' has been deleted!"
+
+    redirect_to article_path('')
+  end
+
+  def edit
+    @article = Article.find(params[:id])
+  end
+
+  def update
+    @article = Article.find(params[:id])
+    @article.update_attributes(params[:article])
+
+    flash.notice = "Article '#{@article.title}' updated!"
+
+    redirect_to article_path(@article)
+  end
 
 end
